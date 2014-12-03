@@ -1,0 +1,142 @@
+﻿Build started 11/06/2014 0:11:52.
+     1>Project "D:\Documents\of_v0.8.1_vs_release\apps\myApps\StackyProject\StackyProject.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\..\..\libs\openFrameworks /I..\..\..\libs\openFrameworks\graphics /I..\..\..\libs\openFrameworks\app /I..\..\..\libs\openFrameworks\sound /I..\..\..\libs\openFrameworks\utils /I..\..\..\libs\openFrameworks\communication /I..\..\..\libs\openFrameworks\video /I..\..\..\libs\openFrameworks\types /I..\..\..\libs\openFrameworks\math /I..\..\..\libs\openFrameworks\3d /I..\..\..\libs\openFrameworks\gl /I..\..\..\libs\openFrameworks\events /I..\..\..\libs\glut\include /I..\..\..\libs\rtAudio\include /I..\..\..\libs\quicktime\include /I..\..\..\libs\freetype\include /I..\..\..\libs\freetype\include\freetype2 /I..\..\..\libs\freeImage\include /I..\..\..\libs\fmodex\include /I..\..\..\libs\videoInput\include /I..\..\..\libs\glew\include\ /I..\..\..\libs\glu\include /I..\..\..\libs\tess2\include /I..\..\..\libs\cairo\include\cairo /I..\..\..\libs\poco\include /I..\..\..\libs\glfw\include /I..\..\..\libs\openssl\include /I..\..\..\addons /I..\..\..\addons\ofxOpenCv\libs /I..\..\..\addons\ofxOpenCv\src /I..\..\..\addons\ofxOpenCv\libs\opencv /I..\..\..\addons\ofxOpenCv\libs\opencv\include /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2 /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\calib3d /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\contrib /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\features2d /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\highgui /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\imgproc /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\legacy /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\ml /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\objdetect /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\ts /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\video /I..\..\..\addons\ofxOpenCv\libs\opencv\lib /I..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs /I..\..\..\addons\ofxBox2d\libs /I..\..\..\addons\ofxBox2d\src /I..\..\..\addons\ofxBox2d\libs\Box2D /I..\..\..\addons\ofxBox2d\libs\Box2D\Collision /I..\..\..\addons\ofxBox2d\libs\Box2D\Collision\Shapes /I..\..\..\addons\ofxBox2d\libs\Box2D\Common /I..\..\..\addons\ofxBox2d\libs\Box2D\Dynamics /I..\..\..\addons\ofxBox2d\libs\Box2D\Dynamics\Contacts /I..\..\..\addons\ofxBox2d\libs\Box2D\Dynamics\Joints /I..\..\..\addons\ofxBox2d\libs\Box2D\Rope /I..\..\..\addons\ofxBox2d\libs\triangle /I..\..\..\addons\ofxKinectCommonBridge\src /I..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge\include /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D POCO_STATIC /D CAIRO_WIN32_STATIC_BUILD /D DISABLE_SOME_FLOATING_POINT /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"obj\Debug\\" /Fd"obj\Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt src\main.cpp src\testApp.cpp
+         testApp.cpp
+     1>d:\documents\of_v0.8.1_vs_release\libs\poco\include\poco\streamconverter.h(126): warning C4250: 'Poco::InputStreamConverter' : inherits 'std::basic_istream<_Elem,_Traits>::std::basic_istream<_Elem,_Traits>::_Add_vtordisp1' via dominance
+                 with
+                 [
+                     _Elem=char,
+                     _Traits=std::char_traits<char>
+                 ]
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\istream(74) : see declaration of 'std::basic_istream<_Elem,_Traits>::_Add_vtordisp1'
+                 with
+                 [
+                     _Elem=char,
+                     _Traits=std::char_traits<char>
+                 ]
+     1>d:\documents\of_v0.8.1_vs_release\libs\poco\include\poco\streamconverter.h(144): warning C4250: 'Poco::OutputStreamConverter' : inherits 'std::basic_ostream<_Elem,_Traits>::std::basic_ostream<_Elem,_Traits>::_Add_vtordisp2' via dominance
+                 with
+                 [
+                     _Elem=char,
+                     _Traits=std::char_traits<char>
+                 ]
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\ostream(90) : see declaration of 'std::basic_ostream<_Elem,_Traits>::_Add_vtordisp2'
+                 with
+                 [
+                     _Elem=char,
+                     _Traits=std::char_traits<char>
+                 ]
+         main.cpp
+     1>d:\documents\of_v0.8.1_vs_release\libs\poco\include\poco\streamconverter.h(126): warning C4250: 'Poco::InputStreamConverter' : inherits 'std::basic_istream<_Elem,_Traits>::std::basic_istream<_Elem,_Traits>::_Add_vtordisp1' via dominance
+                 with
+                 [
+                     _Elem=char,
+                     _Traits=std::char_traits<char>
+                 ]
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\istream(74) : see declaration of 'std::basic_istream<_Elem,_Traits>::_Add_vtordisp1'
+                 with
+                 [
+                     _Elem=char,
+                     _Traits=std::char_traits<char>
+                 ]
+     1>d:\documents\of_v0.8.1_vs_release\libs\poco\include\poco\streamconverter.h(144): warning C4250: 'Poco::OutputStreamConverter' : inherits 'std::basic_ostream<_Elem,_Traits>::std::basic_ostream<_Elem,_Traits>::_Add_vtordisp2' via dominance
+                 with
+                 [
+                     _Elem=char,
+                     _Traits=std::char_traits<char>
+                 ]
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\ostream(90) : see declaration of 'std::basic_ostream<_Elem,_Traits>::_Add_vtordisp2'
+                 with
+                 [
+                     _Elem=char,
+                     _Traits=std::char_traits<char>
+                 ]
+         Generating Code...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"bin\StackyProject_debug.exe" /INCREMENTAL /NOLOGO /LIBPATH:..\..\..\libs\glut\lib\vs /LIBPATH:..\..\..\libs\glfw\lib\vs /LIBPATH:..\..\..\libs\rtAudio\lib\vs /LIBPATH:..\..\..\libs\FreeImage\lib\vs /LIBPATH:..\..\..\libs\freetype\lib\vs /LIBPATH:..\..\..\libs\quicktime\lib\vs /LIBPATH:..\..\..\libs\fmodex\lib\vs /LIBPATH:..\..\..\libs\videoInput\lib\vs /LIBPATH:..\..\..\libs\cairo\lib\vs /LIBPATH:..\..\..\libs\glew\lib\vs /LIBPATH:..\..\..\libs\glu\lib\vs /LIBPATH:..\..\..\libs\openssl\lib\vs /LIBPATH:..\..\..\libs\Poco\lib\vs /LIBPATH:..\..\..\libs\tess2\lib\vs /LIBPATH:..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs /LIBPATH:..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge\lib\windows "cairo-static.lib" "pixman-1.lib" msimg32.lib OpenGL32.lib GLu32.lib kernel32.lib setupapi.lib Vfw32.lib comctl32.lib glut32.lib rtAudioD.lib videoInputD.lib libfreetype.lib FreeImage.lib qtmlClient.lib dsound.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib glew32s.lib fmodex_vc.lib glu32.lib ssleay32MD.lib libeay32MD.lib crypt32.lib PocoFoundationmdd.lib PocoNetmdd.lib PocoUtilmdd.lib PocoXMLmdd.lib Ws2_32.lib tess2.lib glfw3.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib opencv_calib3d231d.lib opencv_contrib231d.lib opencv_core231d.lib opencv_features2d231d.lib opencv_flann231d.lib opencv_gpu231d.lib opencv_haartraining_engined.lib opencv_highgui231d.lib opencv_imgproc231d.lib opencv_legacy231d.lib opencv_ml231d.lib opencv_objdetect231d.lib opencv_video231d.lib zlibd.lib KinectCommonBridge.lib Kinect10.lib /NODEFAULTLIB:PocoFoundationmdd.lib /NODEFAULTLIB:atlthunk.lib /NODEFAULTLIB:msvcrt /NODEFAULTLIB:libcmt /NODEFAULTLIB:LIBC /NODEFAULTLIB:LIBCMTD /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"bin\StackyProject_debug.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE:NO /NXCOMPAT /IMPLIB:"bin\StackyProject_debug.lib" /MACHINE:X86 /SAFESEH obj\Debug\icon.res
+         obj\Debug\ofxKinectCommonBridge.obj
+         obj\Debug\main.obj
+         obj\Debug\ofxCvColorImage.obj
+         obj\Debug\ofxCvContourFinder.obj
+         obj\Debug\ofxCvFloatImage.obj
+         obj\Debug\ofxCvGrayscaleImage.obj
+         obj\Debug\ofxCvHaarFinder.obj
+         obj\Debug\ofxCvImage.obj
+         obj\Debug\ofxCvShortImage.obj
+         obj\Debug\ofxBox2d.obj
+         obj\Debug\ofxBox2dBaseShape.obj
+         obj\Debug\ofxBox2dCircle.obj
+         obj\Debug\ofxBox2dEdge.obj
+         obj\Debug\ofxBox2dJoint.obj
+         obj\Debug\ofxBox2dPolygon.obj
+         obj\Debug\ofxBox2dRect.obj
+         obj\Debug\b2BroadPhase.obj
+         obj\Debug\b2CollideCircle.obj
+         obj\Debug\b2CollideEdge.obj
+         obj\Debug\b2CollidePolygon.obj
+         obj\Debug\b2Collision.obj
+         obj\Debug\b2Distance.obj
+         obj\Debug\b2DynamicTree.obj
+         obj\Debug\b2TimeOfImpact.obj
+         obj\Debug\b2ChainShape.obj
+         obj\Debug\b2CircleShape.obj
+         obj\Debug\b2EdgeShape.obj
+         obj\Debug\b2PolygonShape.obj
+         obj\Debug\b2BlockAllocator.obj
+         obj\Debug\b2Draw.obj
+         obj\Debug\b2Math.obj
+         obj\Debug\b2Settings.obj
+         obj\Debug\b2StackAllocator.obj
+         obj\Debug\b2Timer.obj
+         obj\Debug\b2Body.obj
+         obj\Debug\b2ContactManager.obj
+         obj\Debug\b2Fixture.obj
+         obj\Debug\b2Island.obj
+         obj\Debug\b2World.obj
+         obj\Debug\b2WorldCallbacks.obj
+         obj\Debug\b2ChainAndCircleContact.obj
+         obj\Debug\b2ChainAndPolygonContact.obj
+         obj\Debug\b2CircleContact.obj
+         obj\Debug\b2Contact.obj
+         obj\Debug\b2ContactSolver.obj
+         obj\Debug\b2EdgeAndCircleContact.obj
+         obj\Debug\b2EdgeAndPolygonContact.obj
+         obj\Debug\b2PolygonAndCircleContact.obj
+         obj\Debug\b2PolygonContact.obj
+         obj\Debug\b2DistanceJoint.obj
+         obj\Debug\b2FrictionJoint.obj
+         obj\Debug\b2GearJoint.obj
+         obj\Debug\b2Joint.obj
+         obj\Debug\b2MotorJoint.obj
+         obj\Debug\b2MouseJoint.obj
+         obj\Debug\b2PrismaticJoint.obj
+         obj\Debug\b2PulleyJoint.obj
+         obj\Debug\b2RevoluteJoint.obj
+         obj\Debug\b2RopeJoint.obj
+         obj\Debug\b2WeldJoint.obj
+         obj\Debug\b2WheelJoint.obj
+         obj\Debug\b2Rope.obj
+         obj\Debug\del_impl.obj
+         obj\Debug\testApp.obj
+         ..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge\lib\windows\KinectCommonBridge.lib
+         D:\Documents\of_v0.8.1_vs_release\libs\openFrameworksCompiled\lib\vs\openframeworksLib_debug.lib
+         StackyProject.vcxproj -> D:\Documents\of_v0.8.1_vs_release\apps\myApps\StackyProject\bin\StackyProject_debug.exe
+       PostBuildEvent:
+         xcopy /e /i /y "D:\Documents\of_v0.8.1_vs_release\apps\myApps\StackyProject\..\..\..\export\vs\*.dll" "D:\Documents\of_v0.8.1_vs_release\apps\myApps\StackyProject\bin"
+         :VCEnd
+         D:\Documents\of_v0.8.1_vs_release\apps\myApps\StackyProject\..\..\..\export\vs\Assimp32.dll
+         D:\Documents\of_v0.8.1_vs_release\apps\myApps\StackyProject\..\..\..\export\vs\fmodex.dll
+         D:\Documents\of_v0.8.1_vs_release\apps\myApps\StackyProject\..\..\..\export\vs\fmodexL.dll
+         D:\Documents\of_v0.8.1_vs_release\apps\myApps\StackyProject\..\..\..\export\vs\FreeImage.dll
+         D:\Documents\of_v0.8.1_vs_release\apps\myApps\StackyProject\..\..\..\export\vs\FreeType-6.dll
+         D:\Documents\of_v0.8.1_vs_release\apps\myApps\StackyProject\..\..\..\export\vs\glut32.dll
+         D:\Documents\of_v0.8.1_vs_release\apps\myApps\StackyProject\..\..\..\export\vs\libeay32.dll
+         D:\Documents\of_v0.8.1_vs_release\apps\myApps\StackyProject\..\..\..\export\vs\ssleay32.dll
+         D:\Documents\of_v0.8.1_vs_release\apps\myApps\StackyProject\..\..\..\export\vs\Zlib.dll
+         9 archivo(s) copiado(s)
+     1>Done Building Project "D:\Documents\of_v0.8.1_vs_release\apps\myApps\StackyProject\StackyProject.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:14.29
