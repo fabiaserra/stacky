@@ -1,4 +1,4 @@
 stacky
 ======
 
-Simple game using ofxKinectCommongBridge and ofxBox2D
+Simple game using ofxKinectCommongBridge and ofxBox2D.
