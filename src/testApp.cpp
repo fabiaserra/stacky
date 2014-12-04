@@ -30,15 +30,18 @@ void testApp::setup(){
 	box2d.setGravity(0, 1);
 	box2d.setFPS(30.0);
 
+	plate_width = 130;
+	plate_height = 12;
+
 	//RIGHT PLATE
 	rightPlate.setPhysics(0.0, 0, 0.5);
-	rightPlate.setup(box2d.getWorld(), ofGetWidth()/2, ofGetHeight()/2, 110, 30);
+	rightPlate.setup(box2d.getWorld(), ofGetWidth()/2, ofGetHeight()/2, plate_width, plate_height+20);
 	//rightSupportR.setup(box2d.getWorld(), ofGetWidth()/2, ofGetHeight()/2, 10, 15);
 	//rightSupportL.setup(box2d.getWorld(), ofGetWidth()/2, ofGetHeight()/2, 10, 15);
 
 	//LEFT PLATE
 	leftPlate.setPhysics(0.0, 0, 0.5);
-    leftPlate.setup(box2d.getWorld(), ofGetWidth()/2, ofGetHeight()/2, 110, 30);
+    leftPlate.setup(box2d.getWorld(), ofGetWidth()/2, ofGetHeight()/2, plate_width, plate_height+20);
 	//leftSupportR.setup(box2d.getWorld(), ofGetWidth()/2, ofGetHeight()/2, 10, 15);
 	//leftSupportL.setup(box2d.getWorld(), ofGetWidth()/2, ofGetHeight()/2, 10, 15);
 
@@ -46,9 +49,22 @@ void testApp::setup(){
 	ofAddListener(box2d.contactStartEvents, this, &testApp::contactStart);
 
 	// load 1 sfx soundfile
-	contact_sound.loadSound("fustapla08.wav");
-	contact_sound.setMultiPlay(true);
-	contact_sound.setLoop(false);
+	box_contact_sound.loadSound("fustapla08.wav");
+	box_contact_sound.setMultiPlay(true);
+	box_contact_sound.setLoop(false);
+
+	circle_contact_sound.loadSound("taulacantometall08.wav");
+	circle_contact_sound.setMultiPlay(true);
+	circle_contact_sound.setLoop(false);
+
+	life_sound.loadSound("life.wav");
+	life_sound.setMultiPlay(true);
+	life_sound.setLoop(false);
+
+	ambience_music.loadSound("lemoncreme.mp3");
+	ambience_music.setMultiPlay(false);
+	ambience_music.setLoop(true);
+	ambience_music.play();
 	
 	bHardMode = false;
 	bCreateBox = true; // Variable to control the interval at which you create boxes
@@ -60,18 +76,18 @@ void testApp::setup(){
 	bContactLeftPlate = false;
 	bContactRightPlate = false;
 	bRightTurn = false;
+	bLoosePoints = false;
+	bWinPoints = false;
+	bCounterInited = false;
 	
 	countCycles = 0;
 	total_lifes = 3;
 	total_time = 0;
 	total_points = 0;
-	max_boxes = 20;
+	max_boxes = 3;
 	bonus_left = 1;
 	bonus_right = 1;
-	countdown = 25;
-
-	plate_width = 110;
-	plate_height = 10;
+	countdown = 15;
 	
 	life.loadImage("vida.png");
 	points_font.loadFont("coolvetica rg.ttf", 70, true);
@@ -79,6 +95,7 @@ void testApp::setup(){
 	countdown_font.setLetterSpacing(1.2);
 	gameOver_font.loadFont("coolvetica rg.ttf", 100, true);
 	finalpoints_font.loadFont("coolvetica rg.ttf", 40, true);
+	mode_font.loadFont("coolvetica rg.ttf", 20, true);
 
 	x_kinect_scale = ofGetWidth()/640.0;
 	y_kinect_scale = ofGetHeight()/480.0;
@@ -90,17 +107,18 @@ void testApp::setup(){
 //--------------------------------------------------------------
 void testApp::contactStart(ofxBox2dContactArgs &e) {
 	
-	if(e.a != NULL && e.b != NULL) 
+	if(e.a != NULL && e.b != NULL && !bGameOver) 
 	{ 
-		
 		//-------------LEFT----------------
 		// if the contact is with the leftPlate
 		if ( !bContactLeftPlate && (e.a->GetBody() == leftPlate.body || e.b->GetBody() == leftPlate.body) )
 		{
+			// and one of the colored boxes
 			for(int i=0; i<color_boxes.size(); i++)
 			{
 				if ( e.a->GetBody() == color_boxes[i].get()->body || e.b->GetBody() == color_boxes[i].get()->body) 
 				{
+					box_contact_sound.play();
 					if ( canBeAttached(&leftPlate, color_boxes[i].get()) )
 					{
 						bContactLeftPlate = true;
@@ -109,9 +127,23 @@ void testApp::contactStart(ofxBox2dContactArgs &e) {
 						color_boxes.erase(color_boxes.begin()+i);
 						bonus_left = 1;
 						total_points += 50*bonus_left;
-						contact_sound.play();
+						bLoosePoints = false;
+						bWinPoints = true;
 						break;
 					}
+				}	
+			}
+
+			// and one of the black circles
+			for(int i=0; i<circles.size(); i++) 
+			{
+				if (e.a->GetBody() == circles[i].get()->body || e.b->GetBody() == circles[i].get()->body) 
+				{
+					total_points -= 50;
+					circle_contact_sound.play();
+					bLoosePoints = true;
+					bWinPoints = false;
+					break;
 				}
 			}
 		}
@@ -127,6 +159,7 @@ void testApp::contactStart(ofxBox2dContactArgs &e) {
 				{
 					if (e.a->GetBody() == color_boxes[i].get()->body || e.b->GetBody() == color_boxes[i].get()->body) 
 					{
+						box_contact_sound.play();
 						if ( canBeAttached(color_boxes_left.back().get(), color_boxes[i].get()) )
 						{
 							ofPtr<ColorRect> b = color_boxes[i];
@@ -134,7 +167,8 @@ void testApp::contactStart(ofxBox2dContactArgs &e) {
 							color_boxes.erase(color_boxes.begin()+i);
 							if (color_boxes_left.size()%4 == 0) bonus_left *= 2;
 							total_points += 50*bonus_left;
-							contact_sound.play();
+							bLoosePoints = false;
+							bWinPoints = true;
 							break;
 						}
 					}
@@ -145,8 +179,10 @@ void testApp::contactStart(ofxBox2dContactArgs &e) {
 				{
 					if (e.a->GetBody() == circles[i].get()->body || e.b->GetBody() == circles[i].get()->body) 
 					{
-						total_points -= 10;
-						contact_sound.play();
+						total_points -= 50;
+						circle_contact_sound.play();
+						bLoosePoints = true;
+						bWinPoints = false;
 						break;
 					}
 				}
@@ -157,10 +193,12 @@ void testApp::contactStart(ofxBox2dContactArgs &e) {
 		// if the contact is with the rightPlate
 		if ( !bContactRightPlate && (e.a->GetBody() == rightPlate.body || e.b->GetBody() == rightPlate.body) )
 		{
+			// and one of the colored boxes
 			for(int i=0; i<color_boxes.size(); i++)
 			{
 				if ( e.a->GetBody() == color_boxes[i].get()->body || e.b->GetBody() == color_boxes[i].get()->body) 
 				{
+					box_contact_sound.play();
 					if ( canBeAttached(&rightPlate, color_boxes[i].get()) )
 					{
 						bContactRightPlate = true;
@@ -169,9 +207,23 @@ void testApp::contactStart(ofxBox2dContactArgs &e) {
 						color_boxes.erase(color_boxes.begin()+i);
 						bonus_right = 1;
 						total_points += 50*bonus_right;
-						contact_sound.play();
+						bLoosePoints = false;
+						bWinPoints = true;
 						break;
 					}
+				}
+			}
+
+			// and one of the black circles
+			for(int i=0; i<circles.size(); i++) 
+			{
+				if (e.a->GetBody() == circles[i].get()->body || e.b->GetBody() == circles[i].get()->body) 
+				{
+					total_points -= 50;
+					circle_contact_sound.play();
+					bLoosePoints = true;
+					bWinPoints = false;
+					break;
 				}
 			}
 		}
@@ -187,6 +239,7 @@ void testApp::contactStart(ofxBox2dContactArgs &e) {
 				{
 					if (e.a->GetBody() == color_boxes[i].get()->body || e.b->GetBody() == color_boxes[i].get()->body) 
 					{
+						box_contact_sound.play();
 						if ( canBeAttached(color_boxes_right.back().get(), color_boxes[i].get()) )
 						{
 							ofPtr<ColorRect> b = color_boxes[i];
@@ -194,7 +247,8 @@ void testApp::contactStart(ofxBox2dContactArgs &e) {
 							color_boxes.erase(color_boxes.begin()+i);
 							if (color_boxes_right.size()%4 == 0) bonus_right *= 2;
 							total_points += 50*bonus_right;
-							contact_sound.play();
+							bLoosePoints = false;
+							bWinPoints = true;
 							break;
 						}
 					}
@@ -205,8 +259,10 @@ void testApp::contactStart(ofxBox2dContactArgs &e) {
 				{
 					if (e.a->GetBody() == circles[i].get()->body || e.b->GetBody() == circles[i].get()->body) 
 					{
-						total_points -= 10;
-						contact_sound.play();
+						total_points -= 50;
+						circle_contact_sound.play();
+						bLoosePoints = true;
+						bWinPoints = false;
 						break;
 					}
 				}
@@ -221,13 +277,11 @@ void testApp::update(){
 
 	kinect.update();
 	
-	//if (bloosePoints);
-
 	// SILHOUETTE OF THE USER
 	max_grayImage.setFromPixels(kinect.getDepthPixelsRef());
 
-	max_grayImage.threshold(210, true);
-	max_grayImage.blurGaussian(25);
+	max_grayImage.threshold(225, true);
+	max_grayImage.blurGaussian(15);
 	min_grayImage = max_grayImage;
 	min_grayImage.erode();
 	min_grayImage.erode();
@@ -247,7 +301,7 @@ void testApp::update(){
 	// start countdown when we reach max_boxes in both stacks
 	if (bStartCountdown && !bGameOver) 
 	{
-		countdown -= 1.0/60.0; //decrease time by one
+		countdown -= 1.0/30.0; //decrease time by one
 		if (countdown <= 0.0) bGameOver = true;
 	}
 
@@ -281,37 +335,43 @@ void testApp::update(){
 		}
 	}
 
-	// wait a 30 cycles before asking again to create less boxes
 	countCycles++;
     
-	if(countCycles == 150) {
+	int boxes_temp = 150;
+	if (bHardMode)
+	{
+		boxes_temp = 10;
+		countCycles = 0;
+	}
+	
+	// wait some cycles before asking again to create more boxes
+	if(countCycles == boxes_temp) {
 		bCreateBox = true;
 		countCycles = 0;
 	}
 
 	// create some color boxes every so often
-	if((int)ofRandom(0, 50) == 0 && bCreateBox && bStartGame && !bStartCountdown) {
+	if((int)ofRandom(0, 60) == 0 && bCreateBox && bStartGame && !bStartCountdown) {
 		
 		bCreateBox = false;
 
-		float w = ofRandom(80, 95);
-		float h = ofRandom(15, 20);
+		float w = ofRandom(75, 95);
+		float h = ofRandom(15, 30);
 		
 		if(bHardMode)
 		{
-			float w = ofRandom(60, 100);
-			float h = ofRandom(15, 50);
+			w = ofRandom(55, 110);
+			h = ofRandom(15, 45);
 		}
 		
 		ofPtr<ColorRect> b = ofPtr<ColorRect>(new ColorRect);
 		b.get()->setPhysics(5, 0.1, 1.5);
 		b.get()->setColor(); 
 		
-		int x_range = ofRandom(ofGetWidth()/6, ofGetWidth()/6 + 50); // range of values for the left stack
-		//int x_range = ofRandom(5*ofGetWidth()/6-50, 5*ofGetWidth()/6);
+		int x_range = ofRandom(ofGetWidth()/6 - 10, ofGetWidth()/6 + 60); // range of values for the left stack
 		if (bRightTurn && color_boxes_right.size() < max_boxes) // if right turn and right stack not full
 		{
-			x_range = ofRandom(5*ofGetWidth()/6-50, 5*ofGetWidth()/6);
+			x_range = ofRandom(5*ofGetWidth()/6-60, 5*ofGetWidth()/6+10);
 			bRightTurn = false;
 		}
 		else // if not right turn, next iteration right turn
@@ -321,16 +381,23 @@ void testApp::update(){
 
 		if (color_boxes_left.size() >= max_boxes) // if left stack is full, always right turn
 		{
-			x_range = ofRandom(5*ofGetWidth()/6-50, 5*ofGetWidth()/6);
+			x_range = ofRandom(5*ofGetWidth()/6-60, 5*ofGetWidth()/6+10);
 		}
 
 		b.get()->setup(box2d.getWorld(), x_range, -h, w, h);
 		color_boxes.push_back(b);
 	}
 
+	int circles_temp = 150;
+	if (bStartCountdown) circles_temp = 90;
+	if (bHardMode)
+	{
+		if (bStartCountdown) circles_temp = 20;
+		circles_temp = 60;
+	}
 	// create some black circles every so often
-	if((int)ofRandom(0, 500) == 0 && bStartGame) {	
-		float r = ofRandom(15, 20);
+	if((int)ofRandom(0, circles_temp) == 0 && bStartGame) {	
+		float r = ofRandom(12, 30);
 		circles.push_back(ofPtr<ofxBox2dCircle>(new ofxBox2dCircle));
 		circles.back().get()->setPhysics(8.0, 0.43, 0.3);
 		circles.back().get()->setup(box2d.getWorld(), ofRandom(0, ofGetWidth()), -r, r);
@@ -356,8 +423,8 @@ void testApp::update(){
 	float temp_left_y = leftPlate.getPosition().y;
 
 	leftPlate.setPosition(hand_l_x - 30, hand_l_y + leftPlate.getHeight()/2 - 15);
-	//leftSupportR.setPosition(hand_l_x-leftPlate.getWidth()/2 - 30, hand_l_y - leftPlate.getHeight()/2 + 8);
-	//leftSupportL.setPosition(hand_l_x+leftPlate.getWidth()/2 - 30, hand_l_y - leftPlate.getHeight()/2 + 8);
+	//leftSupportR.setPosition(hand_l_x-leftPlate.getWidth()/2 - 30, hand_l_y - leftPlate.getHeight()/2);
+	//leftSupportL.setPosition(hand_l_x+leftPlate.getWidth()/2 - 30, hand_l_y - leftPlate.getHeight()/2);
 
 	x_left_movement = leftPlate.getPosition().x - temp_left_x;
 	y_left_movement = leftPlate.getPosition().y - temp_left_y;
@@ -367,8 +434,8 @@ void testApp::update(){
 	float temp_right_y = rightPlate.getPosition().y;
 	
 	rightPlate.setPosition(hand_r_x + 30, hand_r_y + rightPlate.getHeight()/2 - 15);
-	//rightSupportR.setPosition(hand_r_x-rightPlate.getWidth()/2 + 30, hand_r_y - rightPlate.getHeight()/2 + 8);
-	//rightSupportL.setPosition(hand_r_x+rightPlate.getWidth()/2 + 30, hand_r_y - rightPlate.getHeight()/2 + 8);
+	//rightSupportR.setPosition(hand_r_x-rightPlate.getWidth()/2 + 30, hand_r_y - rightPlate.getHeight()/2);
+	//rightSupportL.setPosition(hand_r_x+rightPlate.getWidth()/2 + 30, hand_r_y - rightPlate.getHeight()/2);
 
 	x_right_movement = rightPlate.getPosition().x - temp_right_x;
 	y_right_movement = rightPlate.getPosition().y - temp_right_y;
@@ -384,7 +451,13 @@ void testApp::update(){
 		{
 			if (color_boxes[i].get()->getPosition().y > ofGetHeight())
 			{
-				total_lifes--;
+				if (!bGameOver)
+				{
+					total_lifes--;
+					total_points -= 100;
+				}
+				bLoosePoints = true;
+				bWinPoints = false;
 				if (total_lifes < 0) bGameOver = true;
 				bCreateLifes = true;
 				color_boxes.erase(color_boxes.begin()+i);
@@ -398,9 +471,13 @@ void testApp::update(){
 	for (int i=0; i<color_boxes_left.size(); i++)
 	{
 		// check if life object collides with any color_box
-		if ( bLifeCreated && lifeHasCollided(color_boxes_left[i].get()) )
+		if ( bLifeCreated && !bGameOver && lifeHasCollided(color_boxes_left[i].get()))
 		{
 			total_lifes++; // if collides we get one more life
+			life_sound.play();
+			total_points += 100;
+			bLoosePoints = false;
+			bWinPoints = true;
 			bLifeCreated = false;
 		}
 		
@@ -459,9 +536,13 @@ void testApp::update(){
 	for (int i=0; i<color_boxes_right.size(); i++)
 	{
 		// check if life object collides with any color_box
-		if ( bLifeCreated && lifeHasCollided(color_boxes_right[i].get()) )
+		if ( bLifeCreated && !bGameOver &&  lifeHasCollided(color_boxes_right[i].get()) )
 		{
 			total_lifes++; // if collides we get one more life
+			life_sound.play();
+			total_points += 100;
+			bLoosePoints = false;
+			bWinPoints = true;
 			bLifeCreated = false;
 		}
 		
@@ -515,16 +596,24 @@ void testApp::update(){
 	
 	
 	// check if life object collides with rightPlate
-	if(bLifeCreated && lifeHasCollided(&rightPlate))
+	if(bLifeCreated && !bGameOver && lifeHasCollided(&rightPlate))
 	{
 		total_lifes++;
+		life_sound.play();
+		total_points += 100;
+		bLoosePoints = false;
+		bWinPoints = true;
 		bLifeCreated = false;
 	}
 
 	// check if life object collides with leftPlate
-	if(bLifeCreated && lifeHasCollided(&leftPlate))
+	if(bLifeCreated && !bGameOver && lifeHasCollided(&leftPlate))
 	{
 		total_lifes++;
+		life_sound.play();
+		total_points += 100;
+		bLoosePoints = false;
+		bWinPoints = true;
 		bLifeCreated = false;
 	}
 	
@@ -539,8 +628,20 @@ void testApp::update(){
 
 	if (color_boxes_left.size() >= max_boxes && color_boxes_right.size() >= max_boxes) 
 		bStartCountdown = true;
-	
-	if (color_boxes_right.size()%4 == 0) bonus_right *= 2;
+
+	//std::cout << pointsCycles << std::endl;
+	if (!bCounterInited && (bLoosePoints || bWinPoints) )
+	{
+		pointsCycles = countCycles;
+		bCounterInited = true;
+	}
+	if (countCycles == pointsCycles + 10)
+	{
+		bLoosePoints = false;
+		bWinPoints = false;
+	}
+
+
 }
 
 //--------------------------------------------------------------
@@ -610,7 +711,6 @@ void testApp::draw(){
 	// brown color for the plates
 	ofSetHexColor(0x472A0B);
 	
-	//leftPlate.draw();
 	ofRect(leftPlate.getPosition().x - leftPlate.getWidth()/2, leftPlate.getPosition().y - leftPlate.getHeight()/2, plate_width, plate_height); 
 	//leftSupportR.draw();
 	//leftSupportL.draw();
@@ -626,15 +726,31 @@ void testApp::draw(){
 	if(bLifeCreated)
 		life.draw(lifePosition.x, lifePosition.y);
 	
-	string info = "";
-	info += "FPS: "+ofToString(ofGetFrameRate(), 1)+"\n";
-	info += "TOTAL LIFES: "+ofToString(total_lifes)+"\n";
-	info += "TOTAL POINTS: "+ofToString(total_points)+"\n";
-	ofSetHexColor(0x444342);
-	ofDrawBitmapString(info, ofGetWidth()-250, 30);
-
+	//string info = "";
+	//info += "FPS: "+ofToString(ofGetFrameRate(), 1)+"\n";
+	//info += "TOTAL LIFES: "+ofToString(total_lifes)+"\n";
+	//info += "TOTAL POINTS: "+ofToString(total_points)+"\n";
+	
+	string info = "Mode: ";
+	if (bHardMode) info += "Hard Mode";
+	else info += "Easy Mode\n";
 	ofSetColor(0);
-	points_font.drawString(ofToString(total_points), points_font.stringWidth(ofToString(total_points)) + 50, ofGetHeight() - 15);
+	mode_font.drawString(info, ofGetWidth()-250, 30);
+	
+	if (bLoosePoints)
+	{
+		ofSetHexColor(0xC41616);
+	}
+	else if (bWinPoints)
+	{
+		ofSetHexColor(0x73B539);
+	}
+	else
+	{
+		ofSetColor(0);
+	}
+	
+	points_font.drawString(ofToString(total_points), 50, ofGetHeight() - 15);
 
 	if (bStartCountdown)
 	{
@@ -651,7 +767,7 @@ void testApp::draw(){
 	if (bGameOver)
 	{
 		string message;
-		if (total_lifes < 0)
+		if (total_lifes < 0 && total_points < 0)
 		{
 			message = "GAME OVER";
 			ofSetHexColor(0xC41616);
@@ -661,10 +777,10 @@ void testApp::draw(){
 			message = "YOU WIN!";	
 			ofSetHexColor(0x73B539);
 		}
-		gameOver_font.drawString( message, ofGetWidth()/2 - gameOver_font.stringWidth(message)/2, ofGetHeight()/2 - 50 );
+		gameOver_font.drawString( message, ofGetWidth()/2 - gameOver_font.stringWidth(message)/2, ofGetHeight()/2 - 60 );
 		string total = ofToString(total_points) + " points";
 		finalpoints_font.drawString( total,  ofGetWidth()/2 - finalpoints_font.stringWidth(total)/2, ofGetHeight()/2);
-		finalpoints_font.drawString( "PULSE ENTER TO RESTART", ofGetWidth()/2 - finalpoints_font.stringWidth("PULSE ENTER TO RESTART")/2, ofGetHeight()/2 + 50);
+		finalpoints_font.drawString( "PULSE ENTER TO RESTART", ofGetWidth()/2 - finalpoints_font.stringWidth("PULSE ENTER TO RESTART")/2, ofGetHeight()/2 + 70);
 	}
 }
 
@@ -700,7 +816,7 @@ void testApp::keyPressed(int key)
 		y_kinect_scale = ofGetHeight()/480.0;
 		x_scale = ofGetWidth()/x_scale_temp;
 		y_scale = ofGetHeight()/y_scale_temp;
-		std::cout << x_scale << std::endl;
+		//std::cout << x_scale << std::endl;
 	}
 
 	if (key == OF_KEY_RETURN)
@@ -710,6 +826,17 @@ void testApp::keyPressed(int key)
 			exit();
 			setup();
 		}
+	}
+
+	if (key == OF_KEY_ESC)
+	{
+		exit();
+	}
+
+	if (key == 'h')
+	{
+		if (bHardMode) bHardMode = false;
+		else bHardMode = true;
 	}
 }
 
@@ -794,11 +921,11 @@ bool testApp::boxesAligned(ofxBox2dRect* baseBox, ofxBox2dRect* box, float dist)
 
 int testApp::allBoxesAligned(vector<ofPtr<ColorRect> >	boxes)
 {
-	for (int i=2; i<color_boxes_left.size(); i++)
+	for (int i=2; i<boxes.size(); i++)
 	{
 		for (int j=i-1; j >= 1; j--)
 		{
-			if ( !boxesAligned(boxes[j].get(), boxes[i].get(), boxes[j].get()->getWidth()/1.8) )
+			if ( !boxesAligned(boxes[j].get(), boxes[i].get(), boxes[j].get()->getWidth()/2.2) )
 			{
 				return j+1;
 			}
@@ -815,12 +942,4 @@ bool testApp::canBeAttached(ofxBox2dRect* baseBox, ofxBox2dRect* box)
 	float min_y = box->getHeight()/2 + baseBox->getHeight()/2;
 	
 	return ( dist_x < baseBox->getWidth()/4 && dist_y < min_y + 1 );
-}
-
-void testApp::loosePoints(ofVec2f pos, int value)
-{
-	string message;
-	message = ofToString(value);
-	ofSetHexColor(0xC41616);
-	points_font.drawString( message, pos.x, pos.y);
 }

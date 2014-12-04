@@ -35,12 +35,14 @@ class testApp : public ofBaseApp{
 		bool boxesAligned(ofxBox2dRect* baseBox, ofxBox2dRect* box, float dist); // check if boxes are horizontally aligned
 		int allBoxesAligned(vector<ofPtr<ColorRect> >	 boxes);
 		bool canBeAttached(ofxBox2dRect* baseBox, ofxBox2dRect* box); // check if boxes are close enough to be attached into the same stack
-		void loosePoints(ofVec2f init_pos, int value);
 
 		ofxKinectCommonBridge kinect;
 
 		// when the box hits we play this sound
-		ofSoundPlayer  contact_sound;
+		ofSoundPlayer  box_contact_sound;
+		ofSoundPlayer  circle_contact_sound;
+		ofSoundPlayer  ambience_music;
+		ofSoundPlayer  life_sound;
 		
 		ofxBox2d								box2d;				//	the box2d world
 		
@@ -69,7 +71,8 @@ class testApp : public ofBaseApp{
 		ofTrueTypeFont						points_font;
 		ofTrueTypeFont						countdown_font;
 		ofTrueTypeFont						gameOver_font;
-		ofTrueTypeFont						finalpoints_font;		
+		ofTrueTypeFont						finalpoints_font;
+		ofTrueTypeFont						mode_font;	
 
 		
 		float								plate_width;			//	visible width of the plates
@@ -85,6 +88,7 @@ class testApp : public ofBaseApp{
 		int			bonus_left;
 		int			bonus_right;
 		float		countdown;
+		int			pointsCycles;
 			
 		bool		bHardMode;			// a flag if we want to make the game harder
 		bool		bCreateBox;			// a flag for creating a new box
@@ -96,6 +100,9 @@ class testApp : public ofBaseApp{
 		bool		bRightTurn;			// a flag to altern the left side and right side of falling boxes
 		bool		bStartCountdown;	// a flag when the stacks are full and the game is about to finish
 		bool		bGameOver;			// a flag when game finishes (WIN or GAME OVER)
+		bool		bLoosePoints;		// a flag to know when we have lost points
+		bool		bWinPoints;			// a flag to know when we have won points
+		bool		bCounterInited;		// a flag to know when the counter for the points has been initialized
 
 
 		// tracking values of the right hand
